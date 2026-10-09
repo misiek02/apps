@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BadgesConfig",
+  "type": "object",
+  "required": ["apps"],
+  "properties": {
+    "style": {
+      "type": "object",
+      "properties": {
+        "height": { "type": "number", "default": 28 },
+        "labelBackgroundColor": { "type": "string", "default": "#555555" },
+        "defaultTextColor": { "type": "string", "default": "#ffffff" },
+        "fontSize": { "type": "number", "default": 10 },
+        "fontFamily": { "type": "string" },
+        "letterSpacing": { "type": "number", "default": 1.25 },
+        "logoMargin": { "type": "number", "default": 9 },
+        "logoSize": { "type": "number", "default": 14 },
+        "logoTextGutter": { "type": "number", "default": 6 },
+        "textMargin": { "type": "number", "default": 12 }
+      }
+    },
+    "apps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category", "color", "logo", "url"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Unique app identifier in kebab-case"
+          },
+          "name": {
+            "type": "string",
+            "description": "App display name on the left section"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category label on the right section"
+          },
+          "color": {
+            "type": "string",
+            "description": "Hex color code for the right category section"
+          },
+          "textColor": {
+            "type": "string",
+            "description": "Optional text color for the category section (default #ffffff)"
+          },
+          "logo": {
+            "type": "string",
+            "description": "Path to original official logo file in assets/logos/"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Target website or repo URL"
+          },
+          "section": {
+            "type": "string",
+            "description": "Markdown section in README.md"
+          },
+          "logoSource": {
+            "type": "string",
+            "description": "Origin repository or URL where logo was obtained"
+          },
+          "license": {
+            "type": "string",
+            "description": "License of the project or logo"
+          },
+          "licenseUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to license text"
+          }
+        }
+      }
+    }
+  }
+}

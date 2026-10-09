@@ -1,0 +1,10 @@
+{
+  "name": "apps",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Curated list of applications with local SVG badges",
+  "scripts": {
+    "generate": "node scripts/generate-badges.js",
+    "test": "node scripts/test-badges.js"
+  }
+}
