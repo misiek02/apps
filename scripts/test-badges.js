@@ -47,6 +47,21 @@ async function runTests() {
     assert(stats.size > 0, `Logo file is non-empty (${stats.size} bytes) for ${app.id}`);
   }
 
+  // Test 2b: Stock fallback icons library
+  console.log('\nTest Suite 2b: Stock Fallback Icons Library');
+  const { STOCK_ICONS, getStockIconForLabel } = require('./stock-icons');
+  assert(STOCK_ICONS.length >= 10, `Stock icons library has ${STOCK_ICONS.length} icons`);
+  for (const stock of STOCK_ICONS) {
+    const stockPath = path.join(ROOT_DIR, 'assets', 'logos', 'stock', stock.filename);
+    assert(fs.existsSync(stockPath), `Stock icon exists: ${stock.filename}`);
+    const svgContent = fs.readFileSync(stockPath, 'utf8');
+    assert(svgContent.startsWith('<svg') && svgContent.trim().endsWith('</svg>'), `Stock icon ${stock.filename} is valid SVG`);
+  }
+  assert(getStockIconForLabel('MUSIC PLAYER').id === 'music', 'getStockIconForLabel maps MUSIC PLAYER to music');
+  assert(getStockIconForLabel('PROJECT').id === 'tools', 'getStockIconForLabel maps PROJECT to tools');
+  assert(getStockIconForLabel('EDITOR').id === 'editor', 'getStockIconForLabel maps EDITOR to editor');
+  assert(getStockIconForLabel('UNKNOWN CATEGORY').id === 'app', 'getStockIconForLabel falls back to app');
+
   // Test 3: README links
   console.log('\nTest Suite 3: README Image References');
   const readmeContent = fs.readFileSync(README_PATH, 'utf8');

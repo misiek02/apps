@@ -49,13 +49,25 @@ npm run add
 
 ### Możliwości interfejsu TUI:
 1. **Wybór kategorii:** Najpierw wybierasz istniejącą kategorię (`Desktop Apps`, `Android Apps`, `Browser Extentions`) za pomocą strzałek klawiatury (↑/↓) lub cyfr, albo wybierasz opcję `[+] Nowa kategoria...`, aby utworzyć nową sekcję w `README.md`.
-2. **Kreator krok po kroku:**
-   * Nazwa aplikacji (np. `Spotify`) oraz automatyczna propozycja identyfikatora `id` (`spotify`).
-   * Etykieta prawej sekcji badge'a (z listy popularnych lub własna).
-   * Kolor badge'a (z palety spójnej z repozytorium lub własny kod HEX).
-   * Docelowy adres URL aplikacji.
-   * Źródło logo: podanie ścieżki do lokalnego pliku `.svg`/`.png` lub bezpośredniego adresu URL (skrypt automatycznie pobierze i zweryfikuje plik).
-   * Informacje licencyjne i źródłowe.
+2. **Błyskawiczne dodawanie z pomijaniem kroków:**
+   * **Nazwa aplikacji:** Wprowadź nazwę produktu (np. `VLC Media Player`).
+   * **Identyfikator (ID):** Automatycznie wygenerowany ze słów nazwy (np. `vlc-media-player`). Wystarczy wcisnąć **Enter**, aby go zaakceptować.
+   * **Etykieta i kolor:** Wybór z listy popularnych lub domyślny pod klawiszem **Enter**.
+   * **Adres URL:** Podaj URL lub wciśnij **Enter** (domyślnie `https://github.com/`).
+   * **Pomijanie ikony (Stockowe ikony SVG):** Możesz pominąć podawanie pliku graficznego — system automatycznie dopasuje i skopiuje wektorową ikonę stockową dobraną do wybranej etykiety:
+     - `MUSIC PLAYER` / `AUDIO PLAYER` → ikona nuty muzycznej (`music.svg`)
+     - `MEDIA PLAYER` / `VIDEO` → ikona odtwarzania wideo (`media.svg`)
+     - `PROJECT` / `SYSTEM TOOL` / `UTILITIES` → ikona narzędzi serwisowych (`tools.svg`)
+     - `EDITOR` / `CODE` → ikona edytora kodu / tekstu (`editor.svg`)
+     - `APP STORE` / `STORE` → ikona sklepu / torby zakupowej (`store.svg`)
+     - `APP MANAGER` / `PACKAGE` → ikona pakietu / modułu (`package.svg`)
+     - `FILE MANAGER` → ikona folderu katalogu (`folder.svg`)
+     - `MANGA READER` / `BOOK` → ikona otwartej książki (`reader.svg`)
+     - `DESKTOP MODE` → ikona monitora komputerowego (`desktop.svg`)
+     - `EXTENSION` / `BROWSER` → ikona elementu puzzla (`extension.svg`)
+     - Pozostałe → uniwersalna ikona aplikacji (`app.svg`)
+     Możesz także wybrać inną ikonę stockową ręcznie z biblioteki lub podać własny plik SVG/PNG.
+   * **Pomijanie licencji i źródła:** Pierwsza opcja w menu licencji to `⚡ Pomiń (Nieokreślona / Pomiń ten krok)`. Po jej wybraniu licencja ustawiana jest na `Not specified`, a źródło dla ikony stockowej generuje się automatycznie bez konieczności wpisywania.
 3. **Automatyzacja:**
    Po zatwierdzeniu podsumowania kreator:
    * Kopiuje/pobiera logo do `assets/logos/<id>.<ext>`.

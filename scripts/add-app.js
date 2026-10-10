@@ -18,6 +18,7 @@ const { execSync } = require('child_process');
 
 const { c, box, printHeader, printStep, select, input, confirm } = require('./tui');
 const { generateBadgeSvg } = require('./generate-badges');
+const { getStockIconForLabel, STOCK_ICONS, STOCK_DIR } = require('./stock-icons');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const CONFIG_PATH = path.join(ROOT_DIR, 'badges.config.json');
@@ -40,6 +41,7 @@ const COLOR_PRESETS = [
 ];
 
 const LICENSE_PRESETS = [
+  { name: '⚡ Pomiń (Nieokreślona / Pomiń ten krok)', value: 'SKIP' },
   { name: 'GPL-3.0 (GNU General Public License v3.0)', value: 'GPL-3.0' },
   { name: 'MIT License', value: 'MIT' },
   { name: 'Apache-2.0 (Apache License 2.0)', value: 'Apache-2.0' },
@@ -239,20 +241,24 @@ async function runWizard() {
   // --- KROK 5: Link docelowy ---
   printStep(5, 7, 'Adres URL aplikacji');
   const appUrl = await input({
-    message: 'Adres URL oficjalnej strony lub repozytorium GitHub',
+    message: 'Adres URL oficjalnej strony lub repozytorium (Enter = domyślny)',
     defaultValue: 'https://github.com/',
-    validate: (val) => /^https?:\/\/.+/.test(val) || 'Podaj poprawny adres URL zaczynający się od http:// lub https://'
+    validate: (val) => /^https?:\/\/.+/.test(val) || 'Podaj poprawny adres URL (np. https://github.com/...)'
   });
 
-  // --- KROK 6: Oficjalne logo ---
-  printStep(6, 7, 'Pozyskanie oficjalnego logo aplikacji');
-  console.log(`${c.dim}Wymagania: Wektorowy SVG lub PNG wysokiej rozdzielczości z oficjalnego źródła.${c.reset}`);
+  // --- KROK 6: Logo aplikacji ---
+  printStep(6, 7, 'Logo aplikacji (Oficjalne lub Stockowe)');
+  console.log(`${c.dim}Możesz podać oficjalne logo lub pominąć ten krok i użyć ikony stockowej dla "${badgeCategory}":${c.reset}`);
+
+  const suggestedStock = getStockIconForLabel(badgeCategory, targetSection);
 
   const logoMode = await select({
-    message: 'Wybierz sposób dostarczenia logo:',
+    message: 'Wybierz źródło logo aplikacji:',
     choices: [
-      { name: 'Lokalna ścieżka do pliku (SVG / PNG)', value: 'local' },
-      { name: 'Pobierz automatycznie z adresu URL', value: 'url' }
+      { name: `⚡ Pomiń / Użyj ikony stockowej dla "${badgeCategory}" (${suggestedStock.description})`, value: 'stock' },
+      { name: '📁 Lokalna ścieżka do pliku (SVG / PNG)', value: 'local' },
+      { name: '🌐 Pobierz automatycznie z adresu URL', value: 'url' },
+      { name: '🎨 Wybierz inną ikonę z biblioteki stockowej...', value: 'pick_stock' }
     ]
   });
 
@@ -261,60 +267,115 @@ async function runWizard() {
   let localSrcPath = null;
   let remoteDownloadUrl = null;
   let logoDestPath = '';
+  let isStockLogo = false;
+  let chosenStock = suggestedStock;
 
-  if (logoMode === 'local') {
+  if (logoMode === 'stock') {
+    isStockLogo = true;
+    const destName = `${appId}.svg`;
+    logoDestPath = path.join(LOGOS_DIR, destName);
+    localSrcPath = suggestedStock.path;
+    finalLogoPath = `assets/logos/${destName}`;
+    console.log(`  ${c.cyan}ℹ Wybrano stockową ikonę:${c.reset} ${suggestedStock.name} (${suggestedStock.filename})\n`);
+  } else if (logoMode === 'pick_stock') {
+    isStockLogo = true;
+    const stockChoice = await select({
+      message: 'Wybierz ikonę z biblioteki stockowej:',
+      choices: STOCK_ICONS.map(item => ({
+        name: `${item.name} — ${item.description}`,
+        value: item.id
+      }))
+    });
+    chosenStock = STOCK_ICONS.find(i => i.id === stockChoice) || suggestedStock;
+    const destName = `${appId}.svg`;
+    logoDestPath = path.join(LOGOS_DIR, destName);
+    localSrcPath = path.join(STOCK_DIR, chosenStock.filename);
+    finalLogoPath = `assets/logos/${destName}`;
+    console.log(`  ${c.cyan}ℹ Wybrano stockową ikonę:${c.reset} ${chosenStock.name} (${chosenStock.filename})\n`);
+  } else if (logoMode === 'local') {
     const srcPath = await input({
-      message: 'Podaj ścieżkę do pliku logo (np. assets/logos/app.svg lub ~/Downloads/icon.svg)',
-      validate: (val) => {
-        const abs = path.isAbsolute(val) ? val : path.resolve(ROOT_DIR, val);
-        if (!fs.existsSync(abs)) return `Plik nie istnieje pod ścieżką: ${abs}`;
-        const ext = path.extname(abs).toLowerCase();
-        if (!['.svg', '.png', '.jpg', '.jpeg'].includes(ext)) {
-          return 'Obsługiwane formaty logo to: .svg, .png, .jpg';
-        }
-        return true;
+      message: 'Podaj ścieżkę do pliku logo (Enter = pomiń i użyj stockowej)',
+      defaultValue: '',
+      hint: 'SVG / PNG'
+    });
+
+    if (!srcPath.trim()) {
+      isStockLogo = true;
+      const destName = `${appId}.svg`;
+      logoDestPath = path.join(LOGOS_DIR, destName);
+      localSrcPath = suggestedStock.path;
+      finalLogoPath = `assets/logos/${destName}`;
+      console.log(`  ${c.yellow}ℹ Pominięto ścieżkę — użyto ikony stockowej:${c.reset} ${suggestedStock.name}\n`);
+    } else {
+      const absSrc = path.isAbsolute(srcPath) ? srcPath : path.resolve(ROOT_DIR, srcPath);
+      if (!fs.existsSync(absSrc)) {
+        console.log(`  ${c.yellow}⚠ Plik nie istnieje pod ścieżką "${absSrc}" — użyto ikony stockowej: ${suggestedStock.name}${c.reset}\n`);
+        isStockLogo = true;
+        const destName = `${appId}.svg`;
+        logoDestPath = path.join(LOGOS_DIR, destName);
+        localSrcPath = suggestedStock.path;
+        finalLogoPath = `assets/logos/${destName}`;
+      } else {
+        const ext = path.extname(absSrc).toLowerCase() || '.svg';
+        const destName = `${appId}${ext}`;
+        logoDestPath = path.join(LOGOS_DIR, destName);
+        localSrcPath = absSrc;
+        finalLogoPath = `assets/logos/${destName}`;
       }
-    });
-
-    const absSrc = path.isAbsolute(srcPath) ? srcPath : path.resolve(ROOT_DIR, srcPath);
-    const ext = path.extname(absSrc).toLowerCase();
-    const destName = `${appId}${ext}`;
-    logoDestPath = path.join(LOGOS_DIR, destName);
-    localSrcPath = absSrc;
-    finalLogoPath = `assets/logos/${destName}`;
+    }
   } else {
-    remoteDownloadUrl = await input({
-      message: 'Wprowadź bezpośredni adres URL do pliku logo (SVG lub PNG)',
-      validate: (val) => /^https?:\/\/.+\.(svg|png|jpg|jpeg)(\?.*)?$/i.test(val) || 'Podaj poprawny URL kończący się na .svg, .png lub .jpg'
+    // logoMode === 'url'
+    const urlInput = await input({
+      message: 'Wprowadź adres URL pliku logo (Enter = pomiń i użyj stockowej)',
+      defaultValue: ''
     });
 
-    let ext = '.svg';
-    const matchExt = remoteDownloadUrl.match(/\.(svg|png|jpg|jpeg)/i);
-    if (matchExt) ext = matchExt[0].toLowerCase();
-    const destName = `${appId}${ext}`;
-    logoDestPath = path.join(LOGOS_DIR, destName);
-    finalLogoPath = `assets/logos/${destName}`;
+    if (!urlInput.trim()) {
+      isStockLogo = true;
+      const destName = `${appId}.svg`;
+      logoDestPath = path.join(LOGOS_DIR, destName);
+      localSrcPath = suggestedStock.path;
+      finalLogoPath = `assets/logos/${destName}`;
+      console.log(`  ${c.yellow}ℹ Pominięto URL — użyto ikony stockowej:${c.reset} ${suggestedStock.name}\n`);
+    } else {
+      remoteDownloadUrl = urlInput.trim();
+      let ext = '.svg';
+      const matchExt = remoteDownloadUrl.match(/\.(svg|png|jpg|jpeg)/i);
+      if (matchExt) ext = matchExt[0].toLowerCase();
+      const destName = `${appId}${ext}`;
+      logoDestPath = path.join(LOGOS_DIR, destName);
+      finalLogoPath = `assets/logos/${destName}`;
+    }
   }
 
   // --- KROK 7: Licencja i metadane ---
   printStep(7, 7, 'Licencja i informacje o źródle');
   const licenseChoice = await select({
-    message: 'Wybierz licencję aplikacji / grafiki:',
+    message: 'Wybierz licencję aplikacji / grafiki (lub pomiń):',
     choices: LICENSE_PRESETS
   });
 
   let appLicense = licenseChoice;
-  if (licenseChoice === '__CUSTOM__') {
+  if (licenseChoice === 'SKIP') {
+    appLicense = 'Not specified';
+  } else if (licenseChoice === '__CUSTOM__') {
     appLicense = await input({
-      message: 'Podaj nazwę licencji (np. BSD-2-Clause, Proprietary)',
-      defaultValue: 'MIT'
+      message: 'Podaj nazwę licencji (Enter = Not specified)',
+      defaultValue: 'Not specified'
     });
   }
 
-  const logoSource = await input({
-    message: 'Podaj źródło pochodzenia logo (repozytorium GitHub / strona)',
-    defaultValue: `Oficjalne repozytorium: ${appUrl}`
-  });
+  const defaultLogoSource = isStockLogo
+    ? `Ikona stockowa (${chosenStock.name})`
+    : `Oficjalne repozytorium: ${appUrl}`;
+
+  let logoSource = defaultLogoSource;
+  if (!isStockLogo) {
+    logoSource = await input({
+      message: 'Podaj źródło pochodzenia logo (Enter = użyj domyślnego)',
+      defaultValue: defaultLogoSource
+    });
+  }
 
   // --- PODSUMOWANIE ---
   console.log('\n' + box('PODSUMOWANIE NOWEJ POZYCJI', [
@@ -324,7 +385,7 @@ async function runWizard() {
     `${c.bold}Etykieta badge'a:${c.reset}    ${badgeCategory}`,
     `${c.bold}Kolor badge'a:${c.reset}       ${badgeColor}`,
     `${c.bold}Adres URL:${c.reset}           ${appUrl}`,
-    `${c.bold}Plik logo:${c.reset}           ${finalLogoPath}`,
+    `${c.bold}Plik logo:${c.reset}           ${finalLogoPath} ${isStockLogo ? c.dim + '(stockowa: ' + chosenStock.name + ')' + c.reset : ''}`,
     `${c.bold}Licencja:${c.reset}            ${appLicense}`,
     `${c.bold}Źródło logo:${c.reset}         ${logoSource}`
   ], 68) + '\n');
@@ -362,9 +423,12 @@ async function runWizard() {
     url: appUrl,
     section: targetSection,
     logoSource: logoSource,
-    license: appLicense,
-    licenseUrl: `${appUrl}/blob/main/LICENSE`
+    license: appLicense
   };
+
+  if (appLicense !== 'Not specified' && appUrl.startsWith('https://github.com/') && appUrl.length > 20) {
+    newAppEntry.licenseUrl = `${appUrl.replace(/\/+$/, '')}/blob/main/LICENSE`;
+  }
 
   if (textColor !== '#ffffff') {
     newAppEntry.textColor = textColor;
