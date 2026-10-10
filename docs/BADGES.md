@@ -29,7 +29,44 @@ repository/
 
 ---
 
-## 2. Jak dodać nową aplikację — krok po kroku
+## 2. Interaktywny asystent w terminalu (Rekomendowany)
+
+Repozytorium wyposażone jest w profesjonalny interfejs terminalowy (TUI) ułatwiający zarządzanie badge'ami i bezbłędne dodawanie nowych aplikacji.
+
+### Uruchomienie
+
+Możesz uruchomić panel główny lub bezpośrednio kreator nowej pozycji:
+
+```bash
+# Główny panel zarządzania
+npm start
+# lub: node scripts/cli.js
+
+# Bezpośredni kreator dodawania aplikacji
+npm run add
+# lub: node scripts/add-app.js
+```
+
+### Możliwości interfejsu TUI:
+1. **Wybór kategorii:** Najpierw wybierasz istniejącą kategorię (`Desktop Apps`, `Android Apps`, `Browser Extentions`) za pomocą strzałek klawiatury (↑/↓) lub cyfr, albo wybierasz opcję `[+] Nowa kategoria...`, aby utworzyć nową sekcję w `README.md`.
+2. **Kreator krok po kroku:**
+   * Nazwa aplikacji (np. `Spotify`) oraz automatyczna propozycja identyfikatora `id` (`spotify`).
+   * Etykieta prawej sekcji badge'a (z listy popularnych lub własna).
+   * Kolor badge'a (z palety spójnej z repozytorium lub własny kod HEX).
+   * Docelowy adres URL aplikacji.
+   * Źródło logo: podanie ścieżki do lokalnego pliku `.svg`/`.png` lub bezpośredniego adresu URL (skrypt automatycznie pobierze i zweryfikuje plik).
+   * Informacje licencyjne i źródłowe.
+3. **Automatyzacja:**
+   Po zatwierdzeniu podsumowania kreator:
+   * Kopiuje/pobiera logo do `assets/logos/<id>.<ext>`.
+   * Aktualizuje `badges.config.json`.
+   * Generuje badge SVG w `assets/badges/<id>.svg`.
+   * Dodaje link do nowej aplikacji w wybranej sekcji `README.md`.
+   * Odświeża `preview-badges.html`.
+
+---
+
+## 3. Ręczne dodawanie aplikacji — krok po kroku
 
 ### Krok 1: Pobierz oficjalną ikonę projektu
 

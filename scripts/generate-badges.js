@@ -292,7 +292,11 @@ function generatePreviewHtml(apps, generated) {
 }
 
 if (require.main === module) {
-  main();
+  if (process.argv.includes('--interactive') || process.argv.includes('-i')) {
+    require('./cli').mainLoop();
+  } else {
+    main();
+  }
 }
 
-module.exports = { generateBadgeSvg, measureTextWidth };
+module.exports = { generateBadgeSvg, measureTextWidth, generatePreviewHtml, main };

@@ -4,6 +4,8 @@
   "private": true,
   "description": "Curated list of applications with local SVG badges",
   "scripts": {
+    "start": "node scripts/cli.js",
+    "add": "node scripts/add-app.js",
     "generate": "node scripts/generate-badges.js",
     "test": "node scripts/test-badges.js"
   }
