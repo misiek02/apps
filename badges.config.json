@@ -204,6 +204,39 @@
       "section": "Arch Linux",
       "logoSource": "Ikona stockowa (Narzędzia / System / Projekt)",
       "license": "Not specified"
+    },
+    {
+      "id": "touchlock",
+      "name": "TOUCHLOCK",
+      "category": "EXTENSION",
+      "color": "#8a2be2",
+      "logo": "assets/logos/touchlock.svg",
+      "url": "https://github.com/mathinraj/TouchLock.git",
+      "section": "Browser Extentions",
+      "logoSource": "Oficjalne repozytorium: https://github.com/mathinraj/TouchLock.git",
+      "license": "Not specified"
+    },
+    {
+      "id": "markitdown",
+      "name": "MARKITDOWN",
+      "category": "UTILITIES",
+      "color": "#007ec6",
+      "logo": "assets/logos/markitdown.svg",
+      "url": "https://github.com/microsoft/markitdown.git",
+      "section": "Tools",
+      "logoSource": "Ikona stockowa (Narzędzia / System / Projekt)",
+      "license": "Not specified"
+    },
+    {
+      "id": "caelestia-shell",
+      "name": "CAELESTIA-SHELL",
+      "category": "SYSTEM TOOL",
+      "color": "#008080",
+      "logo": "assets/logos/caelestia-shell.svg",
+      "url": "https://github.com/caelestia-dots/shell.git",
+      "section": "Arch Linux",
+      "logoSource": "Oficjalne repozytorium: https://github.com/caelestia-dots/shell.git",
+      "license": "Not specified"
     }
   ]
 }

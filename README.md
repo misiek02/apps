@@ -23,6 +23,11 @@ A curated list of useful applications, websites, and resources.
 
 ## Browser Extentions
 [![Ambient light for YouTube](assets/badges/ambient-light-for-youtube.svg)](https://chromewebstore.google.com/detail/ambient-light-for-youtube/paponcgjfojgemddooebbgniglhkajkj)
+[![TouchLock](assets/badges/touchlock.svg)](https://github.com/mathinraj/TouchLock.git)
 
 ## Arch Linux
 [![Caelestia-sddm](assets/badges/caelestia-sddm.svg)](https://github.com/ItsABigIgloo/caelestia-sddm.git)
+[![Caelestia-shell](assets/badges/caelestia-shell.svg)](https://github.com/caelestia-dots/shell.git)
+
+## Tools
+[![markitdown](assets/badges/markitdown.svg)](https://github.com/microsoft/markitdown.git)
