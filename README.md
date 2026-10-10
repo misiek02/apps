@@ -23,3 +23,6 @@ A curated list of useful applications, websites, and resources.
 
 ## Browser Extentions
 [![Ambient light for YouTube](assets/badges/ambient-light-for-youtube.svg)](https://chromewebstore.google.com/detail/ambient-light-for-youtube/paponcgjfojgemddooebbgniglhkajkj)
+
+## Arch Linux
+[![Caelestia-sddm](assets/badges/caelestia-sddm.svg)](https://github.com/ItsABigIgloo/caelestia-sddm.git)

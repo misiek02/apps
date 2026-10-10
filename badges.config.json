@@ -193,6 +193,17 @@
       "logoSource": "https://github.com/WesselKroos/youtube-ambilight (src/images/icon-128.png)",
       "license": "MIT",
       "licenseUrl": "https://github.com/WesselKroos/youtube-ambilight/blob/master/LICENSE"
+    },
+    {
+      "id": "caelestia-sddm",
+      "name": "CAELESTIA-SDDM",
+      "category": "SYSTEM TOOL",
+      "color": "#ea7233",
+      "logo": "assets/logos/caelestia-sddm.svg",
+      "url": "https://github.com/ItsABigIgloo/caelestia-sddm.git",
+      "section": "Arch Linux",
+      "logoSource": "Ikona stockowa (Narzędzia / System / Projekt)",
+      "license": "Not specified"
     }
   ]
 }
