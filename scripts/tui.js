@@ -38,7 +38,21 @@ const c = {
 };
 
 function stripAnsi(str) {
-  return String(str).replace(/\x1b\[[0-9;]*m/g, '');
+  return String(str)
+    .replace(/\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, '')
+    .replace(/\x1b/g, '')
+    .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]/g, '');
+}
+
+/**
+ * Flush any buffered input in stdin (e.g. leftover arrow keys or enters from raw mode)
+ */
+function flushStdin() {
+  if (process.stdin.isTTY) {
+    try {
+      while (process.stdin.read() !== null) {}
+    } catch (_) {}
+  }
 }
 
 /**
@@ -116,12 +130,30 @@ function printStep(step, total, title) {
 /**
  * Helper to read a single line from input (works in both TTY and piped streams)
  */
-async function readLinePrompt(promptText) {
-  process.stdout.write(promptText);
-  const iter = getLineIterator();
-  const next = await iter.next();
-  if (next.done) return '';
-  return next.value;
+function readLinePrompt(promptText) {
+  if (process.stdin.isTTY) {
+    flushStdin();
+    return new Promise((resolve) => {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+        terminal: true
+      });
+      rl.question(promptText, (answer) => {
+        rl.close();
+        resolve(answer);
+      });
+    });
+  } else {
+    // Non-TTY mode (piped stream)
+    return new Promise(async (resolve) => {
+      process.stdout.write(promptText);
+      const iter = getLineIterator();
+      const next = await iter.next();
+      if (next.done) return resolve('');
+      resolve(next.value || '');
+    });
+  }
 }
 
 /**
@@ -245,6 +277,7 @@ function select({ message, choices, defaultIndex = 0 }) {
     function cleanup() {
       process.stdin.removeListener('keypress', onKeypress);
       process.stdin.setRawMode(false);
+      flushStdin();
       console.log(`  ${c.green}✔${c.reset} Wybrano: ${c.bold}${items[selectedIndex].label}${c.reset}\n`);
     }
 
@@ -262,7 +295,8 @@ async function input({ message, defaultValue = '', validate = null, hint = '' })
 
   while (true) {
     const rawAnswer = await readLinePrompt(promptText);
-    const val = rawAnswer.trim() || defaultValue;
+    const clean = stripAnsi(rawAnswer).replace(/[\x00-\x1f\x7f-\x9f]/g, '').trim();
+    const val = clean || defaultValue;
     if (validate) {
       const result = validate(val);
       if (result !== true) {
@@ -282,8 +316,8 @@ async function confirm({ message, defaultValue = true }) {
   const optionsHint = defaultValue ? `${c.bold}T${c.reset}/n` : `t/${c.bold}N${c.reset}`;
   const promptText = `${c.bold}${c.brightCyan}?${c.reset} ${c.bold}${message}${c.reset} (${optionsHint}): `;
 
-  const ans = await readLinePrompt(promptText);
-  const trimmed = ans.trim().toLowerCase();
+  const rawAns = await readLinePrompt(promptText);
+  const trimmed = stripAnsi(rawAns).trim().toLowerCase();
   let res = defaultValue;
   if (trimmed === 't' || trimmed === 'y' || trimmed === 'tak' || trimmed === 'yes') {
     res = true;
@@ -297,6 +331,7 @@ async function confirm({ message, defaultValue = true }) {
 module.exports = {
   c,
   box,
+  stripAnsi,
   printHeader,
   printStep,
   select,
