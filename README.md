@@ -31,3 +31,11 @@ A curated list of useful applications, websites, and resources.
 
 ## Tools
 [![markitdown](assets/badges/markitdown.svg)](https://github.com/microsoft/markitdown.git)
+
+## Skills
+[![img2threejs](assets/badges/img2threejs.svg)](https://github.com/img2threejs/img2threejs)
+[![awesome-design-md](assets/badges/awesome-design-md.svg)](https://github.com/VoltAgent/awesome-design-md)
+[![playwright-cli](assets/badges/playwright-cli.svg)](https://github.com/microsoft/playwright-cli)
+[![impeccable](assets/badges/impeccable.svg)](https://github.com/pbakaus/impeccable)
+[![taste-skill](assets/badges/taste-skill.svg)](https://github.com/Leonxlnx/taste-skill)
+
