@@ -3,6 +3,9 @@
 A curated list of useful applications, websites, and resources.
 
 
+## Websites
+[Cheerful Cheap - USB Cables](https://cheerful.cheap/categories/usb-cables/)
+
 ---
 ## Desktop Apps
 [![Onlyoffice](assets/badges/onlyoffice.svg)](https://github.com/ONLYOFFICE)
@@ -39,4 +42,3 @@ A curated list of useful applications, websites, and resources.
 [![impeccable](assets/badges/impeccable.svg)](https://github.com/pbakaus/impeccable)
 [![taste-skill](assets/badges/taste-skill.svg)](https://github.com/Leonxlnx/taste-skill)
 [![graphify](assets/badges/graphify.svg)](https://github.com/Graphify-Labs/graphify)
-
