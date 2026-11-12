@@ -3,8 +3,10 @@
 A curated list of useful applications, websites, and resources.
 
 
-## Websites
-[Cheerful Cheap - USB Cables](https://cheerful.cheap/categories/usb-cables/)
+## Product Comparisons
+[![Batteries](assets/badges/batteries.svg)](https://docs.google.com/spreadsheets/u/0/d/1UCgmOpakl8062Joau-KA1MAkM-ou3mRu7XzP_mbQEt0/htmlview?pli=1#gid=2136035052)
+[![Chargers](assets/badges/chargers.svg)](https://docs.google.com/spreadsheets/u/0/d/1FDxP7JoZ2xQlirrceAqK-V3dRE7_cgdoRYeY4_YMUBs/htmlview#gid=0)
+[![USB Cables](assets/badges/usb-cables.svg)](https://cheerful.cheap/categories/usb-cables/)
 
 ---
 ## Desktop Apps
