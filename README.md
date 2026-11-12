@@ -38,4 +38,5 @@ A curated list of useful applications, websites, and resources.
 [![playwright-cli](assets/badges/playwright-cli.svg)](https://github.com/microsoft/playwright-cli)
 [![impeccable](assets/badges/impeccable.svg)](https://github.com/pbakaus/impeccable)
 [![taste-skill](assets/badges/taste-skill.svg)](https://github.com/Leonxlnx/taste-skill)
+[![graphify](assets/badges/graphify.svg)](https://github.com/Graphify-Labs/graphify)
 

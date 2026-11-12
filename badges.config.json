@@ -297,6 +297,18 @@
       "logoSource": "https://tasteskill.dev/icon.png",
       "license": "MIT",
       "licenseUrl": "https://github.com/Leonxlnx/taste-skill/blob/main/LICENSE"
+    },
+    {
+      "id": "graphify",
+      "name": "GRAPHIFY",
+      "category": "SKILL",
+      "color": "#118d4f",
+      "logo": "assets/logos/graphify.svg",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "section": "Skills",
+      "logoSource": "https://github.com/Graphify-Labs/graphify (docs/logo-icon.svg)",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/Graphify-Labs/graphify/blob/v8/LICENSE"
     }
   ]
 }
